@@ -13,7 +13,7 @@ Hyperledger Fabric 1.0.5安装
 3，拉取fabric项目的源代码（包含了一个基本网络的定义以及这个基础上的e2e例子）
 
   git clone https://github.com/hyperledger/fabric.git
-  git checkout release-1.0.5
+  git checkout v1.0.5
 
   1)，配置用
     fabric/examples/e2e_cli/configtx.yaml

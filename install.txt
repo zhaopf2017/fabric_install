@@ -1,58 +1,51 @@
 Hyperledger Fabric 1.0.5安装
 
 1，系统要求
-ubuntu 1604 64位操作系统
-docker 通过给定的docker安装包及依赖包。
-docker-compose 通过给定文件，直接复制到/usr/local/bin目录下。
-git 通过apt安装
+  ubuntu 1604 64位操作系统
+  docker 通过给定的docker安装包及依赖包。
+  docker-compose 通过给定文件，直接复制到/usr/local/bin目录下。
+  git 通过apt安装
 
 2，创建目录
-如果自己需要编译fabric的源码，请放在这个目录，否则任意目录即可。
-/opt/gopath/src/github.com/hyperledger
+  如果自己需要编译fabric的源码，请放在这个目录，否则任意目录即可。
+  /opt/gopath/src/github.com/hyperledger
 
 3，拉取fabric项目的源代码（包含了一个基本网络的定义以及这个基础上的e2e例子）
 
-git clone https://github.com/hyperledger/fabric.git
-git checkout release-1.0.5
+  git clone https://github.com/hyperledger/fabric.git
+  git checkout release-1.0.5
 
-1)，配置用
-fabric/examples/e2e_cli/configtx.yaml
-fabric/examples/e2e_cli/cryptogen.yaml
-2)，启动用
-fabric/examples/e2e_cli/docker-compose-cli.yaml
-fabric/examples/e2e_cli/network_setup.sh
+  1)，配置用
+    fabric/examples/e2e_cli/configtx.yaml
+    fabric/examples/e2e_cli/cryptogen.yaml
+  2)，启动用
+    fabric/examples/e2e_cli/docker-compose-cli.yaml
+    fabric/examples/e2e_cli/network_setup.sh
 
 4，复制工具到release/linux-amd64/bin目录(也可自行编译，需要go语言编译环境）
-包含cryptogen,configtxgen
+  包含cryptogen,configtxgen
 
 5，生成证书材料文件及初始块及组织配置文件（二进制）
-fabric/examples/e2e_cli/generateArtifacts.sh mychannel
+  fabric/examples/e2e_cli/generateArtifacts.sh mychannel
 
 6，下载docker镜像
-请修改docker的仓库源为官方中国源
-配置Docker中国区官方镜像
+  请修改docker的仓库源为官方中国源
+  配置Docker中国区官方镜像
 
-使用vi修改 /etc/docker/daemon.json 文件并添加上”registry-mirrors”: [“https://registry.docker-cn.com“]，如下：
+    使用vi修改 /etc/docker/daemon.json 文件并添加上”registry-mirrors”: [“https://registry.docker-cn.com“]，如下：
+    vi /etc/docker/daemon.json 
+      { 
+        "registry-mirrors": ["https://registry.docker-cn.com"] 
+      }
 
-
-
-vi /etc/docker/daemon.json 
-
-{ 
-
-"registry-mirrors": ["https://registry.docker-cn.com"] 
-
-}
-
-重新启动服务
-
-./download-dockerimages.sh -c x86_64-1.0.5 -f x86_64-1.0.5
+  重新docker启动服务
+  下载镜像：
+  ./download-dockerimages.sh -c x86_64-1.0.5 -f x86_64-1.0.5
 
 
 7，修改network_setup.sh
 
-1），fabric/examples/e2e_cli目录中有这个文件，但是这个文件是测试用的。所以每次都删掉节点的密码材料文件及节点的配置目录，也就是channel-artifacts  crypto-config两个目录，然后再生成，我们之前已经用generateArtifacts.sh生成了相关文件，不需要删除重建了，因为密码文件每次都会不同的。需要修改的地方是注释“networkUp方法中的source generateArtifacts.sh $CH_NAME 一行，rm -rf channel-artifacts/*.block channel-artifacts/*.tx crypto-config 一行。
-2），networdDown方法中有删除所有容器及所有不是fabric的镜像的命令，如果这台设备上还存在其它用途的容器及镜像，则会被误删。请注意修改。
-
+  1），fabric/examples/e2e_cli目录中有这个文件，但是这个文件是测试用的。所以每次都删掉节点的密码材料文件及节点的配置目录，也就是channel-artifacts  crypto-config两个目录，然后再生成，我们之前已经用generateArtifacts.sh生成了相关文件，不需要删除重建了，因为密码文件每次都会不同的。需要修改的地方是注释“networkUp方法中的source generateArtifacts.sh $CH_NAME 一行，rm -rf channel-artifacts/*.block channel-artifacts/*.tx crypto-config 一行。
+  2），networdDown方法中有删除所有容器及所有不是fabric的镜像的命令，如果这台设备上还存在其它用途的容器及镜像，则会被误删。请注意修改。
 
 8，启动network_setup.sh up进行e2e例子的测试。
